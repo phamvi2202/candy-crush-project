@@ -23,5 +23,17 @@ public class GameManager {
             }
             System.out.println();
         }
+        // --- GỌI MATCHLOGIC ĐỂ CHẠY TEST ---
+        System.out.println("\nBắt đầu kiểm tra nổ kẹo và hiệu ứng dây chuyền...");
+        MatchLogic logic = new MatchLogic();
+        
+        // Vòng lặp Combo: Cứ có nổ -> rơi kẹo -> quét lại xem có nổ tiếp không
+        boolean isMatching = true;
+        while (isMatching) {
+            isMatching = logic.checkAndScore(currentMap);
+        }
+        
+        System.out.println("Đã xử lý xong toàn bộ chuỗi combo!");
+        System.out.println("Tổng điểm bạn đạt được: " + logic.getScore());
     }
 }
