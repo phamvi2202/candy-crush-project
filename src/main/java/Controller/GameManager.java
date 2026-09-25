@@ -12,28 +12,27 @@ public class GameManager {
 
     public void startGame() {
         System.out.println("Đang khởi động Candy Crush...");
-        // Gọi hàm loadMap với bản đồ 8x8
         currentMap = levelLoader.loadMap("map.txt", 8, 8);
 
-        // In mảng 2 chiều ra màn hình Console để test
-        System.out.println("Đã nạp bản đồ thành công:");
+        System.out.println("Đã nạp bản đồ ban đầu:");
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 System.out.print(currentMap[i][j] + " ");
             }
             System.out.println();
         }
-        // --- GỌI MATCHLOGIC ĐỂ CHẠY TEST ---
-        System.out.println("\nBắt đầu kiểm tra nổ kẹo và hiệu ứng dây chuyền...");
+
         MatchLogic logic = new MatchLogic();
         
-        // Vòng lặp Combo: Cứ có nổ -> rơi kẹo -> quét lại xem có nổ tiếp không
-        boolean isMatching = true;
-        while (isMatching) {
-            isMatching = logic.checkAndScore(currentMap);
-        }
+        // KỊCH BẢN 1: Thử một nước đi SAI (Đổi 2 viên kẹo không tạo ra cụm nổ)
+        // Ví dụ: Đổi viên ở hàng 0 cột 0 với hàng 0 cột 1
+        logic.swapCandies(currentMap, 0, 0, 0, 1);
         
-        System.out.println("Đã xử lý xong toàn bộ chuỗi combo!");
-        System.out.println("Tổng điểm bạn đạt được: " + logic.getScore());
+        // KỊCH BẢN 2: Thử một nước đi ĐÚNG 
+        // LƯU Ý: Để kịch bản này chạy nổ, bạn phải mở file map.txt 
+        // và sắp xếp sao cho đổi 1 viên là tạo thành 3 viên giống nhau.
+        // Ví dụ: logic.swapCandies(currentMap, 2, 3, 2, 4);
+
+        System.out.println("Tổng điểm hiện tại: " + logic.getScore());
     }
 }

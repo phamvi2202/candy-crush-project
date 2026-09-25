@@ -125,5 +125,42 @@ public class MatchLogic {
         }
         System.out.println();
     }
+    // Thuật toán đổi chỗ 2 viên kẹo và kiểm tra hợp lệ
+    public boolean swapCandies(int[][] map, int r1, int c1, int r2, int c2) {
+        // 1. Kiểm tra 2 ô có nằm cạnh nhau không (chỉ được đổi ngang hoặc dọc)
+        if (Math.abs(r1 - r2) + Math.abs(c1 - c2) != 1) {
+            System.out.println("Nước đi sai: Hai viên kẹo phải nằm liền kề nhau!");
+            return false;
+        }
+
+        // 2. Tạm thời đổi vị trí 2 viên kẹo trong mảng
+        int temp = map[r1][c1];
+        map[r1][c1] = map[r2][c2];
+        map[r2][c2] = temp;
+
+        System.out.println("\n>>> Thử tráo đổi: Kẹo ở (" + r1 + "," + c1 + ") với (" + r2 + "," + c2 + ") <<<");
+
+        // 3. Gọi hàm checkAndScore xem có nổ không
+        boolean isValidMove = checkAndScore(map);
+
+        // 4. Quyết định: Hoàn tác hoặc Kích hoạt chuỗi Combo
+        if (!isValidMove) {
+            System.out.println("-> Không có kẹo nổ. TRẢ VỀ VỊ TRÍ CŨ!");
+            // Đổi ngược lại
+            temp = map[r1][c1];
+            map[r1][c1] = map[r2][c2];
+            map[r2][c2] = temp;
+            
+            System.out.println("--- Bảng sau khi hoàn tác ---");
+            printMap(map);
+            return false;
+        } else {
+            // Nếu hợp lệ, kẹo đã nổ và rơi xuống. Ta chạy vòng lặp xem có nổ dây chuyền không
+            while (checkAndScore(map)) {
+                // Tự động quét cho đến khi hết combo
+            }
+            return true;
+        }
+    }
     
 }
