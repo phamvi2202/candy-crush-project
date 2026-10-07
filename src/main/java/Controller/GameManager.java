@@ -35,4 +35,18 @@ public class GameManager {
 
         System.out.println("Tổng điểm hiện tại: " + logic.getScore());
     }
+
+    void processPlayerMove(int firstRow, int firstCol, int row, int col) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+    public void processPlayerMove(int r1, int c1, int r2, int c2) {
+        MatchLogic logic = new MatchLogic();
+        boolean success = logic.swapCandies(currentMap, r1, c1, r2, c2);
+        
+        if (success) {
+            System.out.println("Nuoc di hop le. Diem hien tai: " + logic.getScore());
+        } else {
+            System.out.println("Nuoc di sai. Vui long chon lai!");
+        }
+    }
 }
