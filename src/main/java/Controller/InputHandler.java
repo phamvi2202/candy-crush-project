@@ -10,7 +10,7 @@ import java.awt.event.MouseAdapter;
  *
  * @author ADMIN
  */
-public class InputHandler {
+public class InputHandler extends MouseAdapter {
     private GameManager gameManager;
     private final int CELL_SIZE = 60; 
     
