@@ -7,7 +7,7 @@ import javax.imageio.ImageIO;
 public class AssetManager {
     public static BufferedImage[] loadCandyImages() {
         BufferedImage[] images = new BufferedImage[6];
-        String[] fileNames = {"red.png", "orange.png", "yellow.png", "green.png", "blue.png", "purple.png"};
+        String[] fileNames = {"red.png", "orange.png", "green.png", "blue.png", "pink.png", "purple.png"};
         
         for (int i = 0; i < 6; i++) {
             String path = "src/main/java/assets/" + fileNames[i];

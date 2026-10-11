@@ -10,10 +10,10 @@ import java.util.Random;
 public enum CandyType {
     RED(new Color(231, 76, 60)),
     ORANGE(new Color(243, 156, 18)),
-    YELLOW(new Color(241, 220, 40)),
     GREEN(new Color(46, 204, 113)),
     BLUE(new Color(52, 152, 219)),
-    PURPLE(new Color(155, 89, 182));
+    PURPLE(new Color(155, 89, 182)),
+    PINK(new Color(255, 105, 180));
 
     private static final CandyType[] VALUES = values();
 
