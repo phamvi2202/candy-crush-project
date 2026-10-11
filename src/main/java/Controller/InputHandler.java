@@ -1,21 +1,14 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package Controller;
 
-import java.awt.event.MouseEvent;
+import candycrush.model.Position;
 import java.awt.event.MouseAdapter;
-/**
- *
- * @author ADMIN
- */
+import java.awt.event.MouseEvent;
+
 public class InputHandler extends MouseAdapter {
-    private GameManager gameManager;
+    private GameManager gameManager; 
     private final int CELL_SIZE = 60; 
     
-    private int firstRow = -1;
-    private int firstCol = -1;
+    private Position firstSelection = null;
 
     public InputHandler(GameManager gameManager) {
         this.gameManager = gameManager;
@@ -26,17 +19,19 @@ public class InputHandler extends MouseAdapter {
         int col = e.getX() / CELL_SIZE;
         int row = e.getY() / CELL_SIZE;
 
-        if (firstRow == -1 && firstCol == -1) {
-            firstRow = row;
-            firstCol = col;
-            System.out.println("Chon keo tai: (" + firstRow + ", " + firstCol + ")");
+        Position clickedPos = new Position(row, col);
+
+        if (firstSelection == null) {
+            firstSelection = clickedPos;
+            System.out.println("Chọn kẹo tại: " + firstSelection);
         } else {
-            System.out.println("Doi voi keo tai: (" + row + ", " + col + ")");
-            gameManager.processPlayerMove(firstRow, firstCol, row, col);
+            System.out.println("Đổi với kẹo tại: " + clickedPos);
             
-            firstRow = -1;
-            firstCol = -1;
+            // Chuyển việc xử lý sang GameManager
+            gameManager.processPlayerMove(firstSelection, clickedPos);
+            
+            // Reset lựa chọn
+            firstSelection = null;
         }
     }
-    
 }
