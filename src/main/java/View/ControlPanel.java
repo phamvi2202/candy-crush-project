@@ -17,12 +17,6 @@ public class ControlPanel extends JPanel {
         btnEnd.setBounds(0, 0, 190, 60); 
         btnReset.setBounds(210, 0, 190, 60); 
         
-        // BẬT HIỆN ĐỎ ĐỂ CĂN CHỈNH (Đổi true thành false khi đã khớp)
-        btnEnd.setOpaque(true); // <--- ĐỔI FALSE
-        btnEnd.setBackground(new Color(255, 0, 0, 100));
-        btnReset.setOpaque(true); // <--- ĐỔI FALSE
-        btnReset.setBackground(new Color(255, 0, 0, 100));
-        
         btnEnd.setContentAreaFilled(false); 
         btnEnd.setBorderPainted(false);
         btnEnd.setFocusable(false);
