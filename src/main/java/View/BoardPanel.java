@@ -8,7 +8,10 @@ import java.util.List;
 import javax.swing.*;
 
 public class BoardPanel extends JPanel {
-    private final int ROWS = 8, COLS = 8, TILE_SIZE = 60, PADDING = 20;
+    // TILE_SIZE và PADDING dùng để căn chỉnh kẹo cho khớp với ảnh nền
+    private final int ROWS = 10, COLS = 8;
+    private int TILE_SIZE = 45; 
+    private int PADDING = 0;   
     private int[][] board;
     private Color[] colors = {Color.RED, Color.ORANGE, Color.YELLOW, Color.GREEN, Color.CYAN, Color.MAGENTA};
     private BufferedImage[] candyImages;
@@ -34,8 +37,8 @@ public class BoardPanel extends JPanel {
 
     public BoardPanel(BufferedImage[] images) {
         this.candyImages = images;
-        setPreferredSize(new Dimension((COLS * TILE_SIZE) + (PADDING * 2), (ROWS * TILE_SIZE) + (PADDING * 2)));
-        setBackground(new Color(30, 30, 30));
+        // Đã xóa setPreferredSize và setBackground
+        setOpaque(false); // QUAN TRỌNG: Làm trong suốt nền để thấy ảnh game_bg.png
         board = new int[ROWS][COLS];
     }
 
@@ -57,7 +60,6 @@ public class BoardPanel extends JPanel {
     }
     // ===========================================
 
-    // ... (Giữ nguyên các hàm startSwapAnimation, startExplosionAnimation, startDropAnimation) ...
     public void startSwapAnimation(int row1, int col1, int row2, int col2, Runnable onComplete) {
         isAnimating = true; r1 = row1; c1 = col1; r2 = row2; c2 = col2; dx = c2 - c1; dy = r2 - r1; animProgress = 0;
         timer = new Timer(10, e -> {
@@ -121,7 +123,6 @@ public class BoardPanel extends JPanel {
         dropTimer.start();
     }
 
-    // ... (Giữ nguyên paintComponent và drawCandy như code cũ của bạn) ...
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -132,9 +133,11 @@ public class BoardPanel extends JPanel {
             for (int c = 0; c < COLS; c++) {
                 int x = PADDING + (c * TILE_SIZE);
                 int y = PADDING + (r * TILE_SIZE);
-                g2d.setColor(new Color(50, 50, 50));
-                g2d.fillRoundRect(x, y, TILE_SIZE - 2, TILE_SIZE - 2, 12, 12);
-
+                
+                // ĐÃ XÓA LỆNH VẼ NỀN ĐEN (g2d.fillRoundRect) Ở ĐÂY
+                g2d.setColor(new Color(0, 0, 0, 80)); 
+                g2d.fillRoundRect(x + 2, y + 2, TILE_SIZE - 4, TILE_SIZE - 4, 12, 12);
+                
                 if (board[r][c] == -1) continue;
                 if (isAnimating && ((r == r1 && c == c1) || (r == r2 && c == c2))) continue; 
                 
@@ -149,6 +152,7 @@ public class BoardPanel extends JPanel {
                 boolean isThisCandyExploding = isExploding && explodingCandies.contains(new Point(r, c));
                 drawCandy(g2d, board[r][c], x, y, isThisCandyExploding);
 
+                // Viền trắng khi click chọn kẹo
                 if (r == selectedRow && c == selectedCol) {
                     g2d.setColor(Color.WHITE);
                     g2d.setStroke(new BasicStroke(3));

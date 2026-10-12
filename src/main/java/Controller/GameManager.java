@@ -1,14 +1,9 @@
 package Controller;
-
-import candycrush.model.Game;
-import candycrush.model.GameStatus;
-import candycrush.model.Position;
-import candycrush.model.CandyType;
+import candycrush.model.*;
 import View.GameFrame;
 import java.awt.Point;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import javax.swing.JOptionPane;
 
 public class GameManager {
     private Game gameModel;
@@ -18,12 +13,31 @@ public class GameManager {
     public GameManager(GameFrame viewFrame) {
         this.gameModel = new Game();
         this.viewFrame = viewFrame;
+        
+        // Sự kiện chuyển màn chính
+        this.viewFrame.getStartPanel().getBtnStart().addActionListener(e -> { viewFrame.showGameScreen(); startGame(); });
+        this.viewFrame.getEndPanel().getBtnHome().addActionListener(e -> viewFrame.showStartScreen());
+        
+        // Sự kiện cho thanh điều khiển dưới bàn cờ
+        this.viewFrame.getControlPanel().getBtnEnd().addActionListener(e -> endGameEarly());
+        this.viewFrame.getControlPanel().getBtnReset().addActionListener(e -> startGame());
     }
 
     public void startGame() {
+        isInputLocked = false;
         gameModel.newGame();
-        viewFrame.getTopPanel().updateInfo(gameModel.getScore(), gameModel.getMovesLeft(), gameModel.getTarget());
+        updateUI();
         viewFrame.getBoardPanel().updateBoard(getBoardData());
+    }
+
+    // Xử lý khi bấm nút "Kết thúc sớm"
+    private void endGameEarly() {
+        isInputLocked = true; // Khóa bàn cờ
+        viewFrame.showEndScreen(gameModel.getLevel(), gameModel.getScore()); // Về thẳng màn hình thua
+    }
+
+    private void updateUI() {
+        viewFrame.getTopPanel().updateInfo(gameModel.getLevel(), gameModel.getScore(), gameModel.getMovesLeft(), gameModel.getTarget()); 
     }
 
     private int[][] getBoardData() {
@@ -38,6 +52,7 @@ public class GameManager {
     }
 
     public void processPlayerMove(Position pos1, Position pos2) {
+        // Bỏ biến isPaused khỏi điều kiện
         if (isInputLocked || gameModel.getStatus() != GameStatus.PLAYING) return;
         
         isInputLocked = true;
@@ -46,7 +61,7 @@ public class GameManager {
         int r2 = pos2.getRow(), c2 = pos2.getCol();
 
         if (success) {
-            viewFrame.getTopPanel().updateInfo(gameModel.getScore(), gameModel.getMovesLeft(), gameModel.getTarget());
+            updateUI();
             viewFrame.getBoardPanel().startSwapAnimation(r1, c1, r2, c2, () -> processMatches(1));
         } else {
             viewFrame.getBoardPanel().startSwapAnimation(r1, c1, r2, c2, () -> {
@@ -60,7 +75,7 @@ public class GameManager {
         
         if (!matches.isEmpty()) {
             gameModel.clearMatches(matches, combo);
-            viewFrame.getTopPanel().updateInfo(gameModel.getScore(), gameModel.getMovesLeft(), gameModel.getTarget());
+            updateUI();
             
             List<Point> viewMatches = new ArrayList<>();
             for (Position p : matches) viewMatches.add(new Point(p.getRow(), p.getCol()));
@@ -78,8 +93,17 @@ public class GameManager {
         if (gameModel.ensurePlayable()) viewFrame.getBoardPanel().updateBoard(getBoardData());
 
         GameStatus status = gameModel.getStatus();
-        if (status == GameStatus.WON) viewFrame.showMessage("Chiến Thắng!", "Chúc mừng! Bạn đã vượt qua màn chơi.");
-        else if (status == GameStatus.LOST) viewFrame.showMessage("Thất Bại", "Bạn đã hết lượt. Chúc may mắn lần sau!");
-        else isInputLocked = false; 
+        if (status == GameStatus.WON) {
+            JOptionPane.showMessageDialog(viewFrame, "Tuyệt vời! Chuẩn bị sang Level " + (gameModel.getLevel() + 1), "Qua màn!", JOptionPane.INFORMATION_MESSAGE);
+            gameModel.nextLevel();
+            updateUI();
+            viewFrame.getBoardPanel().updateBoard(getBoardData());
+            isInputLocked = false;
+        } else if (status == GameStatus.LOST) {
+            viewFrame.showEndScreen(gameModel.getLevel(), gameModel.getScore());
+            isInputLocked = false; 
+        } else { 
+            isInputLocked = false; 
+        }
     }
 }

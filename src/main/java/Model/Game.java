@@ -7,7 +7,7 @@ import java.util.Set;
  * Dùng Board để thao tác trên lưới kẹo. Đây là "Model" trong mô hình MVC.
  */
 public class Game {
-    public static final int ROWS = 8;
+    public static final int ROWS = 10;
     public static final int COLS = 8;
     private static final int POINTS_PER_CANDY = 10;
     private static final int MOVES_PER_LEVEL = 20;
@@ -81,8 +81,12 @@ public class Game {
     }
 
     public GameStatus getStatus() {
-        if (score >= target) return GameStatus.WON;
-        if (movesLeft <= 0) return GameStatus.LOST;
+        // 1. Kiểm tra điểm trước: Đủ điểm là qua màn ngay lập tức
+        if (score >= target) return GameStatus.WON; 
+
+        // 2. Nếu chưa đủ điểm mà hết lượt thì mới bị tính là thua
+        if (movesLeft <= 0) return GameStatus.LOST; 
+
         return GameStatus.PLAYING;
     }
 
